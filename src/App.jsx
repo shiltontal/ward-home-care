@@ -1388,7 +1388,31 @@ export default function App() {
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: 16 }}>
         {view === "dashboard" && <Dashboard patients={patients} contacts={contacts} tasks={tasks} onSelect={selectChild} onResolveTask={resolveTask} />}
-        {view === "child" && selected && <PatientDetail patient={selected} contacts={contacts} onUpdate={updatePatient} tasks={tasks} onResolveTask={resolveTask} />}
+        {view === "child" && selected && (
+          <div style={{ display: "flex", gap: 16 }}>
+            <div style={{ flex: 1 }}>
+              <PatientDetail patient={selected} contacts={contacts} onUpdate={updatePatient} tasks={tasks} onResolveTask={resolveTask} />
+            </div>
+            <div style={{ width: 140, flexShrink: 0 }}>
+              <div style={{ background: "#fff", borderRadius: 12, padding: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.08)", position: "sticky", top: 80 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: CL.pri, marginBottom: 8, textAlign: "center" }}>👦 מטופלים</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                  {patients.map(p => (
+                    <button key={p.id} onClick={() => selectChild(p.id)}
+                      style={{
+                        padding: "8px 10px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, textAlign: "right",
+                        background: p.id === selected.id ? CL.pri : "#f0f4f8",
+                        color: p.id === selected.id ? "#fff" : CL.txt,
+                        transition: "all 0.15s"
+                      }}>
+                      {p.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {view === "log" && <LogContact patients={patients} staffList={staffList} onSave={addContact} onUpdatePatient={updatePatient} onAddTask={addTask} />}
         {view === "staff" && <StaffSection patients={patients} staffList={staffList} onUpdateList={saveS} staffUpdates={staffUpdates} onAddUpdate={addUpdate} onUpdatePatient={updatePatient} />}
         {view === "settings" && <Settings patients={patients} contacts={contacts} staffList={staffList} staffUpdates={staffUpdates} tasks={tasks} onImport={saveP} />}
