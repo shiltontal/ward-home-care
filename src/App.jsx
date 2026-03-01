@@ -51,7 +51,7 @@ const TOKEN_TYPES = [
 ];
 
 const COUNSELORS = ["ירדן", "גל", "טל", "עדי", "הילה", "תומר", "מאי", "רועי", "רן", "עפרי", "סול", "אוראל", "שיראל"];
-const NURSES = ["נתי", "שגיא", "דוראל", "אליסיה", "נזא", "עובידה", "אטי", "מאיה", "אנה"];
+const NURSES = ["נתי", "שגיא", "דוראל", "אליסיה", "נדא", "עוביידא", "אטי", "מאיה", "אנה"];
 
 const INITIAL_PATIENTS = [
   { id: "p1", name: "ליאורי", shift: "רביעי", staff: { doctor: "לבי", psychologist: "רוית", ot: "מירנדה", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "נתי", counselor: "ירדן" }},
@@ -60,8 +60,8 @@ const INITIAL_PATIENTS = [
   { id: "p4", name: "אריאל", shift: "רביעי", staff: { doctor: "רחל", psychologist: "עומר", ot: "הדסי", slp: "", behaviorist: "", dietitian: "", art_therapist: "ליאת", nurse: "דוראל", counselor: "עדי" }},
   { id: "p5", name: "נהוראי", shift: "שלישי", staff: { doctor: "ליין", psychologist: "שיר גבאי", ot: "הדסי", slp: "ענת", behaviorist: "ויקי", dietitian: "", art_therapist: "ליאת", nurse: "אליסיה", counselor: "הילה" }},
   { id: "p6", name: "שיר הלל", shift: "רביעי", staff: { doctor: "טל", psychologist: "עומר", ot: "מירנדה", slp: "", behaviorist: "", dietitian: "בתיה", art_therapist: "ליאת", nurse: "שגיא", counselor: "תומר" }},
-  { id: "p7", name: "יובל", shift: "שלישי", staff: { doctor: "חגל", psychologist: "שיר בן פורת", ot: "הדסי", slp: "", behaviorist: "", dietitian: "בתיה", art_therapist: "ליאת", nurse: "נזא", counselor: "מאי" }},
-  { id: "p8", name: "אילעי", shift: "רביעי", staff: { doctor: "חגל", psychologist: "עומר", ot: "חוני", slp: "ענת", behaviorist: "", dietitian: "", art_therapist: "", nurse: "עובידה", counselor: "רועי" }},
+  { id: "p7", name: "יובל", shift: "שלישי", staff: { doctor: "חגל", psychologist: "שיר בן פורת", ot: "הדסי", slp: "", behaviorist: "", dietitian: "בתיה", art_therapist: "ליאת", nurse: "נדא", counselor: "מאי" }},
+  { id: "p8", name: "עילאי", shift: "רביעי", staff: { doctor: "חגל", psychologist: "עומר", ot: "חוני", slp: "ענת", behaviorist: "", dietitian: "", art_therapist: "", nurse: "עוביידא", counselor: "רועי" }},
   { id: "p9", name: "ליבי", shift: "שלישי", staff: { doctor: "ליין", psychologist: "שיר בן פורת", ot: "חוני", slp: "", behaviorist: "", dietitian: "", art_therapist: "ליאת", nurse: "אטי", counselor: "רן" }},
   { id: "p10", name: "מאיה", shift: "רביעי", staff: { doctor: "ליבי", psychologist: "שיר בן פורת", ot: "מירנדה", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "מאיה", counselor: "עפרי" }},
   { id: "p11", name: "אלקנה", shift: "רביעי", staff: { doctor: "ליין", psychologist: "רוית", ot: "חוני", slp: "", behaviorist: "", dietitian: "", art_therapist: "", nurse: "אנה", counselor: "סול" }},
