@@ -867,6 +867,13 @@ function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask })
     roleId: r.id, roleName: r.label, icon: r.icon, color: r.color, name: selectedPatient.staff[r.id],
   })) : [];
 
+  // All professionals for staff request dropdown
+  const allProfessionals = PROFESSIONAL_ROLES.flatMap(r =>
+    (PROFESSIONAL_STAFF[r.id] || []).map(name => ({
+      roleId: r.id, roleName: r.label, icon: r.icon, color: r.color, name
+    }))
+  );
+
   const allStaffNames = [...new Set([...staffList.map(s => s.name), ...patients.flatMap(p => Object.values(p.staff || {}).filter(Boolean))])];
 
   const handleChildSelect = (childId) => {
@@ -1092,7 +1099,7 @@ function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask })
         </div>
 
         {/* Request staff conversation */}
-        {selectedPatient && patientProfessionals.length > 0 && (
+        {selectedPatient && (
           <div style={{ padding: "12px 14px", background: "#faf5ff", borderRadius: 8, border: "1px solid #e9d5ff" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <input type="checkbox" checked={form.requestStaff} onChange={e => f("requestStaff", e.target.checked)} style={{ width: 16, height: 16 }} />
@@ -1101,7 +1108,7 @@ function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask })
             {form.requestStaff && (
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
                 <Sel value={form.requestTarget} onChange={v => f("requestTarget", v)}
-                  options={patientProfessionals.map(p => ({ value: `${p.roleId}|${p.name}`, label: `${p.icon} ${p.name} (${p.roleName})` }))}
+                  options={allProfessionals.map(p => ({ value: `${p.roleId}|${p.name}`, label: `${p.icon} ${p.name} (${p.roleName})` }))}
                   placeholder="בחר איש/אשת מקצוע" style={{ width: "100%" }} />
                 <Inp value={form.requestReason} onChange={v => f("requestReason", v)} placeholder="סיבה / נושא (אופציונלי)" />
               </div>
