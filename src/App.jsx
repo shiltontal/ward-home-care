@@ -754,6 +754,7 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
                     <span style={{ fontSize: 10, color: CL.txtL }}>{fmtDate(c.date)} {c.time}</span>
                   </div>
                   <div style={{ fontSize: 11, color: CL.txtM, marginTop: 4 }}><strong>צוות:</strong> {c.staffName}</div>
+                  {c.contactPerson && <div style={{ fontSize: 11, color: CL.txtM }}><strong>איש קשר:</strong> {c.contactPerson}</div>}
                   {c.activity && <div style={{ fontSize: 11, color: CL.txtM }}><strong>עדכון:</strong> {c.activity}</div>}
                   {c.goal && <div style={{ fontSize: 11, color: CL.txtM }}><strong>מטרה:</strong> {c.goal}</div>}
                   {c.tokensAwarded && Object.entries(c.tokensAwarded).filter(([, v]) => v > 0).length > 0 && (
@@ -847,7 +848,7 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
 
 // ===================== LOG CONTACT =====================
 function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask }) {
-  const empty = { childId: "", type: "morning", staffName: "", staffRole: "", method: "טלפון", activity: "", goal: "", notes: "", childPresent: false, date: today(), time: "08:30", tokensAwarded: { growth: 0, adl: 0, home: 0 }, requestStaff: false, requestTarget: "", requestReason: "", professionalRole: "" };
+  const empty = { childId: "", type: "morning", staffName: "", staffRole: "", contactPerson: "", method: "טלפון", activity: "", goal: "", notes: "", childPresent: false, date: today(), time: "08:30", tokensAwarded: { growth: 0, adl: 0, home: 0 }, requestStaff: false, requestTarget: "", requestReason: "", professionalRole: "" };
   const [form, setForm] = useState(empty);
   const [saved, setSaved] = useState(false);
   const f = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
@@ -1001,6 +1002,10 @@ function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask })
             </div>
           )}
 
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: CL.pri }}>איש קשר (הורה/משפחה)</label>
+            <Inp value={form.contactPerson} onChange={v => f("contactPerson", v)} placeholder="שם איש הקשר" />
+          </div>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: CL.pri }}>אמצעי</label>
             <Sel value={form.method} onChange={v => f("method", v)} options={CONTACT_METHODS} style={{ width: "100%" }} />
