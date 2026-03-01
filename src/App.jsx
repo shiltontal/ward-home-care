@@ -1008,7 +1008,7 @@ function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask })
                 {contactType?.role === "counselor" ? "מדריך/ה *" : contactType?.role === "nurse" ? "אח/ות *" : "איש/אשת צוות *"}
               </label>
               {contactType?.role === "counselor" ? (
-                <Sel value={form.staffName} onChange={v => f("staffName", v)} options={COUNSELORS.map(n => ({ value: n, label: n }))} placeholder="בחר מדריך/ה" style={{ width: "100%" }} />
+                <Sel value={form.staffName} onChange={v => f("staffName", v)} options={[...COUNSELORS, ...(PROFESSIONAL_STAFF.volunteer || [])].map(n => ({ value: n, label: n }))} placeholder="בחר מדריך/ה" style={{ width: "100%" }} />
               ) : contactType?.role === "nurse" ? (
                 <Sel value={form.staffName} onChange={v => f("staffName", v)} options={NURSES.map(n => ({ value: n, label: n }))} placeholder="בחר אח/ות" style={{ width: "100%" }} />
               ) : (
