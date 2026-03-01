@@ -720,6 +720,11 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
           {DAYS_HEB.map((day, i) => {
             const items = (patient.weeklySchedule || {})[day] || [];
             const isToday = new Date().getDay() === i;
+            // Get contacts for this day of the week
+            const dayContacts = pc.filter(c => {
+              const contactDate = new Date(c.date);
+              return contactDate.getDay() === i;
+            });
             return (
               <div key={day} style={{ background: isToday ? "#ebf8ff" : "#f7fafc", borderRadius: 6, padding: 6, minWidth: 90, border: isToday ? "2px solid #3182ce" : `1px solid ${CL.brd}` }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: isToday ? "#2b6cb0" : CL.txtM, textAlign: "center", marginBottom: 4 }}>{day}</div>
@@ -729,7 +734,17 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
                     <div style={{ color: CL.txtM }}>{item.activity}</div>
                   </div>
                 ))}
-                {items.length === 0 && <div style={{ fontSize: 10, color: CL.txtL, textAlign: "center" }}>—</div>}
+                {dayContacts.slice(0, 3).map((c, j) => {
+                  const ct = CONTACT_TYPES.find(t => t.id === c.type);
+                  return (
+                    <div key={`c${j}`} style={{ fontSize: 10, padding: "2px 4px", marginBottom: 2, background: "#fff", borderRadius: 3, borderRight: `2px solid ${ct?.color || "#888"}` }}>
+                      <div style={{ fontWeight: 600 }}>{c.time} {ct?.icon}</div>
+                      <div style={{ color: CL.txtM }}>{c.staffName}</div>
+                      {c.contactPerson && <div style={{ color: CL.txtL, fontSize: 9 }}>📞 {c.contactPerson}</div>}
+                    </div>
+                  );
+                })}
+                {items.length === 0 && dayContacts.length === 0 && <div style={{ fontSize: 10, color: CL.txtL, textAlign: "center" }}>—</div>}
               </div>
             );
           })}
