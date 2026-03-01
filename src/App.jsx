@@ -51,7 +51,7 @@ const TOKEN_TYPES = [
 ];
 
 const COUNSELORS = ["ירדן", "גל", "טל", "עדי", "הילה", "תומר", "מאי", "רועי", "רן", "עפרי", "סול", "אוראל", "שיראל"];
-const NURSES = ["נתי", "שגיא", "דוראל", "אליסיה", "נדא", "עוביידה", "אטי", "מאיה", "אנה", "נועה", "ניקו", "רומן"];
+const NURSES = ["נתי", "שגיא", "דוראל", "אליסיה", "נזא", "עובידה", "אטי", "מאיה", "אנה"];
 
 const INITIAL_PATIENTS = [
   { id: "p1", name: "ליאורי", shift: "רביעי", staff: { doctor: "לבי", psychologist: "רוית", ot: "מירנדה", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "נתי", counselor: "ירדן" }},
