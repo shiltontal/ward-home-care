@@ -23,6 +23,7 @@ const STAFF_ROLES = [
   { id: "social_worker", label: 'עו"ס', icon: "🤲", fixed: true, color: "#64748b", professional: true },
   { id: "family_companion", label: "מלווה משפחתית", icon: "👩‍👧", fixed: true, color: "#a855f7", professional: true },
   { id: "volunteer", label: "בת שירות", icon: "⭐", fixed: false, color: "#fbbf24", professional: true },
+  { id: "research", label: "מחקר", icon: "🔬", fixed: true, color: "#0d9488", professional: true },
   { id: "nurse", label: "אח/ות", icon: "💉", fixed: false, color: "#ef4444", professional: false },
   { id: "counselor", label: "מדריך/ה", icon: "🤝", fixed: false, color: "#f59e0b", professional: false },
 ];
@@ -38,6 +39,7 @@ const PROFESSIONAL_STAFF = {
   volunteer: ["ליאור ב.", "ליאור ג.", "שחף", "טליה", "נעמי", "יהב"],
   behaviorist: ["ויקי"],
   dietitian: ["בתיה"],
+  research: [],
 };
 
 const PROFESSIONAL_ROLES = STAFF_ROLES.filter(r => r.professional);
