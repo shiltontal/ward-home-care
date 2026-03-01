@@ -445,7 +445,7 @@ function Dashboard({ patients, contacts, tasks, onSelect, onResolveTask }) {
                 <div style={{ fontSize: 12, opacity: 0.75, fontWeight: 300, letterSpacing: 1 }}>{greeting} 👋</div>
                 <div style={{ fontSize: 24, fontWeight: 900, marginTop: 2, letterSpacing: -0.5, textShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>בבית עם הלב של המחלקה</div>
                 <div style={{ marginTop: 6, fontSize: 15, fontWeight: 300, fontStyle: "italic", opacity: 0.85, letterSpacing: 0.5 }}>
-                  🌿 הקונה מטטה 🌿
+                  🌿 HAKUNA MATATA 🌿
                 </div>
               </div>
               <div className="hero-animal" style={{ animationDelay: "0.3s", marginTop: -4, fontSize: 52 }}>🏠</div>
@@ -1319,7 +1319,7 @@ export default function App() {
       <div style={{ textAlign: "center", color: "#fff" }}>
         <div style={{ fontSize: 56, marginBottom: 12 }}>🏠</div>
         <div style={{ fontSize: 22, fontWeight: 900, textShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>בבית עם הלב של המחלקה</div>
-        <div style={{ fontSize: 14, opacity: 0.8, marginTop: 6, fontWeight: 300, fontStyle: "italic" }}>🌿 הקונה מטטה 🌿</div>
+        <div style={{ fontSize: 14, opacity: 0.8, marginTop: 6, fontWeight: 300, fontStyle: "italic" }}>🌿 HAKUNA MATATA 🌿</div>
         <div style={{ fontSize: 12, opacity: 0.4, marginTop: 8, fontWeight: 300 }}>טוען...</div>
       </div>
     </div>
@@ -1337,7 +1337,7 @@ export default function App() {
             <div style={{ fontSize: 28 }}>🏠</div>
             <div>
               <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: -0.3 }}>בבית עם הלב של המחלקה</div>
-              <div style={{ fontSize: 10, opacity: .5, fontWeight: 300, fontStyle: "italic" }}>🌿 הקונה מטטה 🌿</div>
+              <div style={{ fontSize: 10, opacity: .5, fontWeight: 300, fontStyle: "italic" }}>🌿 HAKUNA MATATA 🌿</div>
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
