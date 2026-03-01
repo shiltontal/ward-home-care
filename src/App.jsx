@@ -770,8 +770,8 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
                   </div>
                   <div style={{ fontSize: 11, color: CL.txtM, marginTop: 4 }}><strong>צוות:</strong> {c.staffName}</div>
                   {c.contactPerson && <div style={{ fontSize: 11, color: CL.txtM }}><strong>איש קשר:</strong> {c.contactPerson}</div>}
-                  {c.activity && <div style={{ fontSize: 13, color: CL.txt, marginTop: 6, padding: "8px 10px", background: "#f0fdf4", borderRadius: 6, borderRight: "3px solid #22c55e", lineHeight: 1.5 }}><strong style={{ color: "#166534" }}>עדכון מהבית:</strong> {c.activity}</div>}
-                  {c.goal && <div style={{ fontSize: 13, color: CL.txt, marginTop: 4, padding: "8px 10px", background: "#eff6ff", borderRadius: 6, borderRight: "3px solid #3b82f6", lineHeight: 1.5 }}><strong style={{ color: "#1e40af" }}>התקדמות במטרה:</strong> {c.goal}</div>}
+                  {c.activity && <div style={{ fontSize: 16, color: CL.txt, marginTop: 8, padding: "12px 14px", background: "#f0fdf4", borderRadius: 8, borderRight: "4px solid #22c55e", lineHeight: 1.6 }}><strong style={{ color: "#166534" }}>עדכון מהבית:</strong> {c.activity}</div>}
+                  {c.goal && <div style={{ fontSize: 16, color: CL.txt, marginTop: 6, padding: "12px 14px", background: "#eff6ff", borderRadius: 8, borderRight: "4px solid #3b82f6", lineHeight: 1.6 }}><strong style={{ color: "#1e40af" }}>התקדמות במטרה:</strong> {c.goal}</div>}
                   {c.tokensAwarded && Object.entries(c.tokensAwarded).filter(([, v]) => v > 0).length > 0 && (
                     <div style={{ display: "flex", gap: 4, marginTop: 3 }}>
                       {Object.entries(c.tokensAwarded).filter(([, v]) => v > 0).map(([k, v]) => {
@@ -781,7 +781,7 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
                     </div>
                   )}
                   {c.childPresent && <div style={{ fontSize: 11, color: CL.txtM }}>👦 מפגש בנוכחות הילד</div>}
-                  {c.notes && <div style={{ fontSize: 13, color: CL.txt, marginTop: 4, padding: "8px 10px", background: "#fefce8", borderRadius: 6, borderRight: "3px solid #eab308", lineHeight: 1.5 }}><strong style={{ color: "#a16207" }}>הערות:</strong> {c.notes}</div>}
+                  {c.notes && <div style={{ fontSize: 16, color: CL.txt, marginTop: 6, padding: "12px 14px", background: "#fefce8", borderRadius: 8, borderRight: "4px solid #eab308", lineHeight: 1.6 }}><strong style={{ color: "#a16207" }}>הערות:</strong> {c.notes}</div>}
                   {c.staffRequest && <div style={{ fontSize: 11, color: "#7c3aed", marginTop: 3 }}>📌 בקשה לשיחה עם {c.staffRequest.targetName}</div>}
                 </div>
               );
