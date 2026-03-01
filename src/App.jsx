@@ -1254,7 +1254,7 @@ function StaffSection({ staffList, onUpdateList, staffUpdates, onAddUpdate, pati
 }
 
 // ===================== SETTINGS =====================
-function Settings({ patients, contacts, staffList, staffUpdates, tasks, onImport }) {
+function Settings({ patients, contacts, staffList, staffUpdates, tasks, onImport, onLogout }) {
   const [importText, setImportText] = useState("");
   const exportAll = () => {
     const data = { patients, contacts, staffList, staffUpdates, tasks, exported: new Date().toISOString() };
@@ -1280,6 +1280,10 @@ function Settings({ patients, contacts, staffList, staffUpdates, tasks, onImport
         <p style={{ fontSize: 11, color: CL.txtM, margin: "0 0 6px" }}>{patients.length} ילדים · {contacts.length} רשומות · {staffList.length} צוות</p>
         <Btn onClick={exportAll}>📤 ייצוא JSON</Btn>
       </Card>
+      <Card>
+        <h3 style={{ margin: "0 0 10px", fontSize: 15, color: CL.pri }}>🚪 התנתקות</h3>
+        <Btn v="danger" onClick={onLogout}>🔓 התנתק מהמערכת</Btn>
+      </Card>
     </div>
   );
 }
@@ -1293,6 +1297,9 @@ const NAV = [
 ];
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem("ward-auth") === "true");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [patients, setPatients] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -1301,6 +1308,49 @@ export default function App() {
   const [tasks, setTasks] = useState([]);
   const [view, setView] = useState("dashboard");
   const [selectedId, setSelectedId] = useState(null);
+
+  const handleLogin = () => {
+    if (loginPassword.toUpperCase() === "HAKUNA MATATA") {
+      localStorage.setItem("ward-auth", "true");
+      setIsAuthenticated(true);
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("ward-auth");
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", fontFamily: "'Heebo', 'Segoe UI', sans-serif", direction: "rtl", background: "linear-gradient(135deg, #1e3a5f 0%, #2c5282 35%, #3b6fb5 65%, #5b8dca 100%)" }}>
+        <div style={{ textAlign: "center", color: "#fff", padding: 30 }}>
+          <div style={{ fontSize: 56, marginBottom: 12 }}>🏠</div>
+          <div style={{ fontSize: 22, fontWeight: 900, textShadow: "0 2px 8px rgba(0,0,0,0.15)", marginBottom: 8 }}>בבית עם הלב של המחלקה</div>
+          <div style={{ fontSize: 14, opacity: 0.8, marginBottom: 24, fontWeight: 300, fontStyle: "italic" }}>🌿 HAKUNA MATATA 🌿</div>
+          <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 12, padding: 24, maxWidth: 300, margin: "0 auto" }}>
+            <div style={{ fontSize: 14, marginBottom: 12, fontWeight: 600 }}>🔐 הכנס סיסמא</div>
+            <input
+              type="password"
+              value={loginPassword}
+              onChange={e => { setLoginPassword(e.target.value); setLoginError(false); }}
+              onKeyDown={e => e.key === "Enter" && handleLogin()}
+              placeholder="סיסמא..."
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: loginError ? "2px solid #ef4444" : "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.15)", color: "#fff", fontSize: 16, textAlign: "center", boxSizing: "border-box", outline: "none" }}
+            />
+            {loginError && <div style={{ color: "#fca5a5", fontSize: 12, marginTop: 8 }}>סיסמא שגויה</div>}
+            <button
+              onClick={handleLogin}
+              style={{ width: "100%", marginTop: 16, padding: "12px 24px", borderRadius: 8, border: "none", background: "#fff", color: "#1a365d", fontSize: 15, fontWeight: 700, cursor: "pointer" }}
+            >כניסה</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     (async () => {
@@ -1437,7 +1487,7 @@ export default function App() {
         )}
         {view === "log" && <LogContact patients={patients} staffList={staffList} onSave={addContact} onUpdatePatient={updatePatient} onAddTask={addTask} />}
         {view === "staff" && <StaffSection patients={patients} staffList={staffList} onUpdateList={saveS} staffUpdates={staffUpdates} onAddUpdate={addUpdate} onUpdatePatient={updatePatient} />}
-        {view === "settings" && <Settings patients={patients} contacts={contacts} staffList={staffList} staffUpdates={staffUpdates} tasks={tasks} onImport={saveP} />}
+        {view === "settings" && <Settings patients={patients} contacts={contacts} staffList={staffList} staffUpdates={staffUpdates} tasks={tasks} onImport={saveP} onLogout={handleLogout} />}
       </div>
     </div>
   );
