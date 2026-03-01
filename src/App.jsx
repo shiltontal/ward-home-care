@@ -1144,7 +1144,7 @@ function StaffMatrix({ patients, onUpdatePatient }) {
           <tbody>
             {patients.map((p, i) => (
               <tr key={p.id} style={{ background: i % 2 === 0 ? "#fff" : "#f7fafc", cursor: "pointer" }} onClick={() => startEdit(p)}>
-                <td style={{ padding: "5px 8px", fontWeight: 700, color: CL.pri, position: "sticky", right: 0, background: i % 2 === 0 ? "#fff" : "#f7fafc", borderLeft: `1px solid ${CL.brd}` }}>{p.name} <span style={{ fontSize: 9, color: CL.txtL }}>✏️</span></td>
+                <td style={{ padding: "5px 8px", fontWeight: 700, color: "#fff", position: "sticky", right: 0, background: i % 2 === 0 ? "#2c5282" : "#1a365d", borderLeft: `1px solid ${CL.brd}`, zIndex: 1 }}>{p.name} <span style={{ fontSize: 9, color: "rgba(255,255,255,0.6)" }}>✏️</span></td>
                 {STAFF_ROLES.map(r => <td key={r.id} style={{ padding: "4px 4px", textAlign: "center", color: p.staff?.[r.id] ? CL.txt : CL.txtL, borderLeft: `1px solid ${CL.brd}`, fontSize: 10 }}>{p.staff?.[r.id] || "—"}</td>)}
               </tr>
             ))}
