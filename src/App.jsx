@@ -105,10 +105,11 @@ function Card({ children, style, onClick, accent }) {
 function Inp({ value, onChange, placeholder, type = "text", style, ...rest }) {
   return <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={{ padding: "7px 10px", borderRadius: 7, border: `1px solid ${CL.brd}`, fontFamily: "inherit", fontSize: 13, width: "100%", boxSizing: "border-box", direction: "rtl", ...style }} {...rest} />;
 }
-function Sel({ value, onChange, options, placeholder, style }) {
-  return <select value={value} onChange={e => onChange(e.target.value)} style={{ padding: "7px 10px", borderRadius: 7, border: `1px solid ${CL.brd}`, fontFamily: "inherit", fontSize: 13, background: "#fff", direction: "rtl", ...style }}>
-    {placeholder && <option value="">{placeholder}</option>}
-    {options.map(o => typeof o === "string" ? <option key={o} value={o}>{o}</option> : <option key={o.value} value={o.value}>{o.label}</option>)}
+function Sel({ value, onChange, options, placeholder, style, dark }) {
+  const baseStyle = { padding: "7px 10px", borderRadius: 7, border: `1px solid ${CL.brd}`, fontFamily: "inherit", fontSize: 13, background: dark ? "#000" : "#fff", color: dark ? "#fff" : "inherit", direction: "rtl", ...style };
+  return <select value={value} onChange={e => onChange(e.target.value)} style={baseStyle}>
+    {placeholder && <option value="" style={dark ? { background: "#000", color: "#fff" } : {}}>{placeholder}</option>}
+    {options.map(o => typeof o === "string" ? <option key={o} value={o} style={dark ? { background: "#000", color: "#fff" } : {}}>{o}</option> : <option key={o.value} value={o.value} style={dark ? { background: "#000", color: "#fff" } : {}}>{o.label}</option>)}
   </select>;
 }
 function TArea({ value, onChange, placeholder, rows = 2, style }) {
@@ -1138,13 +1139,13 @@ function StaffMatrix({ patients, onUpdatePatient }) {
       <div style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, direction: "rtl" }}>
           <thead><tr>
-            <th style={{ padding: "6px 8px", background: "#000", color: "#fff", borderRadius: "0 8px 0 0", position: "sticky", right: 0, zIndex: 2 }}>מטופל/ת</th>
+            <th style={{ padding: "6px 8px", background: CL.pri, color: "#fff", borderRadius: "0 8px 0 0", position: "sticky", right: 0, zIndex: 1 }}>מטופל/ת</th>
             {STAFF_ROLES.map(r => <th key={r.id} style={{ padding: "6px 4px", background: `${r.color}20`, color: r.color, fontWeight: 700, whiteSpace: "nowrap", fontSize: 10 }}>{r.icon}<br />{r.label}</th>)}
           </tr></thead>
           <tbody>
             {patients.map((p, i) => (
               <tr key={p.id} style={{ background: i % 2 === 0 ? "#fff" : "#f7fafc", cursor: "pointer" }} onClick={() => startEdit(p)}>
-                <td style={{ padding: "5px 8px", fontWeight: 700, color: "#fff", position: "sticky", right: 0, background: "#000", borderLeft: `1px solid ${CL.brd}`, zIndex: 1 }}>{p.name} <span style={{ fontSize: 9, color: "rgba(255,255,255,0.6)" }}>✏️</span></td>
+                <td style={{ padding: "5px 8px", fontWeight: 700, color: CL.pri, position: "sticky", right: 0, background: i % 2 === 0 ? "#fff" : "#f7fafc", borderLeft: `1px solid ${CL.brd}` }}>{p.name} <span style={{ fontSize: 9, color: CL.txtL }}>✏️</span></td>
                 {STAFF_ROLES.map(r => <td key={r.id} style={{ padding: "4px 4px", textAlign: "center", color: p.staff?.[r.id] ? CL.txt : CL.txtL, borderLeft: `1px solid ${CL.brd}`, fontSize: 10 }}>{p.staff?.[r.id] || "—"}</td>)}
               </tr>
             ))}
@@ -1377,8 +1378,9 @@ export default function App() {
             <Sel value="" onChange={v => { if (v) selectChild(v); }}
               options={patients.map(p => ({ value: p.id, label: p.name }))}
               placeholder="🔍 מטופל/ת..."
+              dark
               style={{
-                background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)",
+                background: "#000", border: "1px solid rgba(255,255,255,0.3)",
                 color: "#fff", borderRadius: 8, fontSize: 12, padding: "7px 12px",
               }}
             />
