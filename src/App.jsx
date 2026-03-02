@@ -48,6 +48,7 @@ const TOKEN_TYPES = [
   { id: "growth", label: "מטרת צמיחה", icon: "🎯", color: "#22c55e" },
   { id: "adl", label: "מטרת ADL", icon: "🏠", color: "#0ea5e9" },
   { id: "home", label: "מטרת בית", icon: "🏡", color: "#f59e0b" },
+  { id: "values", label: "מטרת ערכים", icon: "💎", color: "#8b5cf6" },
 ];
 
 const COUNSELORS = ["ירדן", "גל", "טל", "עדי", "הילה", "תומר", "מאי", "רועי", "רן", "עפרי", "סול", "אוראל", "שיראל"];
@@ -71,8 +72,8 @@ const INITIAL_PATIENTS = [
   { id: "p15", name: "ירדן", shift: "שלישי", staff: { doctor: "מריאלה", psychologist: "עמרי", ot: "הדסי", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "נתי", counselor: "" }},
 ].map(p => ({
   ...p, age: "", notes: "",
-  currentGoals: { growth: "", adl: "", home: "" },
-  tokens: { growth: 0, adl: 0, home: 0 },
+  currentGoals: { growth: "", adl: "", home: "", values: "" },
+  tokens: { growth: 0, adl: 0, home: 0, values: 0 },
   weeklySchedule: {},
 }));
 
@@ -86,7 +87,7 @@ const today = () => new Date().toISOString().split("T")[0];
 const fmtDate = d => d ? new Date(d).toLocaleDateString("he-IL", { day: "numeric", month: "numeric" }) : "";
 const fmtTime = d => d ? new Date(d).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
 const timeSince = d => { if (!d) return "—"; const h = Math.floor((Date.now() - new Date(d).getTime()) / 36e5); if (h < 1) return "עכשיו"; if (h < 24) return `${h}ש`; const days = Math.floor(h / 24); return days === 1 ? "אתמול" : `${days}י`; };
-const totalTokens = t => { if (!t || typeof t === "number") return t || 0; return (t.growth || 0) + (t.adl || 0) + (t.home || 0); };
+const totalTokens = t => { if (!t || typeof t === "number") return t || 0; return (t.growth || 0) + (t.adl || 0) + (t.home || 0) + (t.values || 0); };
 
 // ===================== UI =====================
 const CL = { bg: "#f0f4f8", card: "#fff", pri: "#1a365d", priL: "#2c5282", brd: "#e2e8f0", txt: "#1a202c", txtM: "#4a5568", txtL: "#a0aec0", ok: "#38a169", warn: "#d69e2e", err: "#e53e3e" };
@@ -496,7 +497,7 @@ function Dashboard({ patients, contacts, tasks, onSelect, onResolveTask }) {
 
 
         {/* ====== PROGRESS WITH SCENES ====== */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
           {stats.map((s, i) => (
             <div key={i} className="dash-card" style={{ background: "#fff", borderRadius: 14, padding: "16px 12px", border: "1px solid #93c5fd20", textAlign: "center", boxShadow: "0 2px 10px rgba(30,58,95,0.04)", animationDelay: `${0.1 + i * 0.06}s` }}>
               <div style={{ marginBottom: 8, display: "flex", justifyContent: "center" }}><s.Scene size={44} /></div>
@@ -602,9 +603,9 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
   const [schedItem, setSchedItem] = useState({ time: "", activity: "" });
 
   const pc = contacts.filter(c => c.childId === patient.id).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  const tokens = (patient.tokens && typeof patient.tokens === "object") ? patient.tokens : { growth: 0, adl: 0, home: 0 };
+  const tokens = (patient.tokens && typeof patient.tokens === "object") ? patient.tokens : { growth: 0, adl: 0, home: 0, values: 0 };
   const tot = totalTokens(tokens);
-  const goals = patient.currentGoals || { growth: "", adl: "", home: "" };
+  const goals = patient.currentGoals || { growth: "", adl: "", home: "", values: "" };
   const patientTasks = tasks.filter(t => t.childId === patient.id && !t.resolved);
 
   const startEdit = () => { setEditData({ ...patient }); setEditing(true); };
@@ -677,7 +678,7 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
             <span style={{ fontWeight: 800, fontSize: 20, color: "#b45309" }}>{tot}</span>
             <span style={{ fontSize: 12, color: CL.txtM }}>סה"כ אסימונים</span>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
             {TOKEN_TYPES.map(tt => (
               <div key={tt.id} style={{ padding: "6px 8px", background: "#fff", borderRadius: 8, border: `1px solid ${CL.brd}`, textAlign: "center" }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: tt.color, marginBottom: 2 }}>{tt.icon} {tt.label}</div>
@@ -863,14 +864,14 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
 
 // ===================== LOG CONTACT =====================
 function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask }) {
-  const empty = { childId: "", type: "morning", staffName: "", staffRole: "", contactPerson: "", method: "טלפון", activity: "", goal: "", notes: "", childPresent: false, date: today(), time: "08:30", tokensAwarded: { growth: 0, adl: 0, home: 0 }, requestStaff: false, requestTarget: "", requestReason: "", professionalRole: "" };
+  const empty = { childId: "", type: "morning", staffName: "", staffRole: "", contactPerson: "", method: "טלפון", activity: "", goal: "", notes: "", childPresent: false, date: today(), time: "08:30", tokensAwarded: { growth: 0, adl: 0, home: 0, values: 0 }, requestStaff: false, requestTarget: "", requestReason: "", professionalRole: "" };
   const [form, setForm] = useState(empty);
   const [saved, setSaved] = useState(false);
   const f = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
   const selectedPatient = patients.find(p => p.id === form.childId);
   const contactType = CONTACT_TYPES.find(t => t.id === form.type);
-  const goals = selectedPatient?.currentGoals || { growth: "", adl: "", home: "" };
+  const goals = selectedPatient?.currentGoals || { growth: "", adl: "", home: "", values: "" };
 
   const isCounselor = form.type === "morning" || form.type === "evening";
   const isNursing = form.type === "nursing";
@@ -911,7 +912,7 @@ function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask })
       const assigned = selectedPatient.staff?.[ct.role];
       if (assigned) staffName = assigned;
     }
-    setForm(prev => ({ ...prev, type: typeId, staffRole: ct?.role || "", staffName, time: ct?.time || prev.time, tokensAwarded: { growth: 0, adl: 0, home: 0 }, professionalRole: "" }));
+    setForm(prev => ({ ...prev, type: typeId, staffRole: ct?.role || "", staffName, time: ct?.time || prev.time, tokensAwarded: { growth: 0, adl: 0, home: 0, values: 0 }, professionalRole: "" }));
   };
 
   const submit = () => {
@@ -929,7 +930,7 @@ function LogContact({ patients, staffList, onSave, onUpdatePatient, onAddTask })
 
     // Award tokens
     if (selectedPatient) {
-      const currentTokens = (selectedPatient.tokens && typeof selectedPatient.tokens === "object") ? { ...selectedPatient.tokens } : { growth: 0, adl: 0, home: 0 };
+      const currentTokens = (selectedPatient.tokens && typeof selectedPatient.tokens === "object") ? { ...selectedPatient.tokens } : { growth: 0, adl: 0, home: 0, values: 0 };
       let changed = false;
       for (const tt of TOKEN_TYPES) {
         if (form.tokensAwarded[tt.id] > 0) { currentTokens[tt.id] = (currentTokens[tt.id] || 0) + form.tokensAwarded[tt.id]; changed = true; }
@@ -1264,7 +1265,7 @@ function Settings({ patients, contacts, staffList, staffUpdates, tasks, onImport
   const importNames = () => {
     const names = importText.split("\n").map(n => n.trim()).filter(Boolean);
     if (!names.length) return;
-    onImport(names.map((name, i) => ({ id: `p_${Date.now()}_${i}`, name, age: "", shift: "", staff: {}, currentGoals: { growth: "", adl: "", home: "" }, tokens: { growth: 0, adl: 0, home: 0 }, notes: "", weeklySchedule: {} })));
+    onImport(names.map((name, i) => ({ id: `p_${Date.now()}_${i}`, name, age: "", shift: "", staff: {}, currentGoals: { growth: "", adl: "", home: "", values: "" }, tokens: { growth: 0, adl: 0, home: 0, values: 0 }, notes: "", weeklySchedule: {} })));
     setImportText("");
   };
   return (
