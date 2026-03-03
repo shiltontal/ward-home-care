@@ -51,7 +51,7 @@ const TOKEN_TYPES = [
   { id: "values", label: "מטרת ערכים", icon: "💎", color: "#8b5cf6" },
 ];
 
-const COUNSELORS = ["ירדן", "גל", "טל", "עדי", "הילה", "תומר", "מאי", "רועי", "רן", "עפרי", "סול", "אוראל", "שיראל"];
+const COUNSELORS = ["ירדן", "גל", "טל", "עדי", "הילה", "תומר", "מאי", "רועי", "רן", "עפרי", "סול", "אוראל", "שיראל", "עמית"];
 const NURSES = ["נתי", "שגיא", "דוראל", "אליסיה", "נדא", "עוביידא", "אטי", "מאיה", "אנה"];
 
 const INITIAL_PATIENTS = [
@@ -593,7 +593,7 @@ function Dashboard({ patients, contacts, tasks, onSelect, onResolveTask }) {
     </>
   );
 }
-function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
+function PatientDetail({ patient, contacts, onUpdate, onUpdateContact, tasks, onResolveTask }) {
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
   const [showStaff, setShowStaff] = useState(false);
@@ -601,6 +601,8 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
   const [showSchedule, setShowSchedule] = useState(false);
   const [schedDay, setSchedDay] = useState(0);
   const [schedItem, setSchedItem] = useState({ time: "", activity: "" });
+  const [editingActivityId, setEditingActivityId] = useState(null);
+  const [editedActivity, setEditedActivity] = useState("");
 
   const pc = contacts.filter(c => c.childId === patient.id).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   const tokens = (patient.tokens && typeof patient.tokens === "object") ? patient.tokens : { growth: 0, adl: 0, home: 0, values: 0 };
@@ -771,7 +773,23 @@ function PatientDetail({ patient, contacts, onUpdate, tasks, onResolveTask }) {
                   </div>
                   <div style={{ fontSize: 11, color: CL.txtM, marginTop: 4 }}><strong>צוות:</strong> {c.staffName}</div>
                   {c.contactPerson && <div style={{ fontSize: 11, color: CL.txtM }}><strong>איש קשר:</strong> {c.contactPerson}</div>}
-                  {c.activity && <div style={{ fontSize: 16, color: CL.txt, marginTop: 8, padding: "12px 14px", background: "#f0fdf4", borderRadius: 8, borderRight: "4px solid #22c55e", lineHeight: 1.6 }}><strong style={{ color: "#166534" }}>עדכון מהבית:</strong> {c.activity}</div>}
+                  {(c.activity || editingActivityId === c.id) && (
+                    editingActivityId === c.id ? (
+                      <div style={{ marginTop: 8, padding: "12px 14px", background: "#f0fdf4", borderRadius: 8, borderRight: "4px solid #22c55e" }}>
+                        <strong style={{ color: "#166534", display: "block", marginBottom: 6 }}>עדכון מהבית:</strong>
+                        <TArea value={editedActivity} onChange={v => setEditedActivity(v)} rows={3} />
+                        <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                          <Btn v="success" sm onClick={() => { onUpdateContact({ ...c, activity: editedActivity }); setEditingActivityId(null); }}>💾 שמור</Btn>
+                          <Btn v="ghost" sm onClick={() => setEditingActivityId(null)}>ביטול</Btn>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 16, color: CL.txt, marginTop: 8, padding: "12px 14px", background: "#f0fdf4", borderRadius: 8, borderRight: "4px solid #22c55e", lineHeight: 1.6, position: "relative" }}>
+                        <strong style={{ color: "#166534" }}>עדכון מהבית:</strong> {c.activity}
+                        <span style={{ position: "absolute", left: 8, top: 8, cursor: "pointer", fontSize: 12 }} onClick={() => { setEditedActivity(c.activity); setEditingActivityId(c.id); }}>✏️</span>
+                      </div>
+                    )
+                  )}
                   {c.goal && <div style={{ fontSize: 16, color: CL.txt, marginTop: 6, padding: "12px 14px", background: "#eff6ff", borderRadius: 8, borderRight: "4px solid #3b82f6", lineHeight: 1.6 }}><strong style={{ color: "#1e40af" }}>התקדמות במטרה:</strong> {c.goal}</div>}
                   {c.tokensAwarded && Object.entries(c.tokensAwarded).filter(([, v]) => v > 0).length > 0 && (
                     <div style={{ display: "flex", gap: 4, marginTop: 3 }}>
@@ -1352,6 +1370,7 @@ export default function App() {
   const selectChild = id => { setSelectedId(id); setView("child"); };
   const updatePatient = p => saveP(patients.map(x => x.id === p.id ? p : x));
   const addContact = c => saveC([...contacts, c]);
+  const updateContact = c => saveC(contacts.map(x => x.id === c.id ? c : x));
   const addUpdate = u => saveU([...staffUpdates, u]);
   const addTask = t => saveT([...tasks, t]);
   const resolveTask = id => saveT(tasks.map(t => t.id === id ? { ...t, resolved: true, resolvedAt: new Date().toISOString() } : t));
@@ -1464,7 +1483,7 @@ export default function App() {
         {view === "child" && selected && (
           <div style={{ display: "flex", gap: 16 }}>
             <div style={{ flex: 1 }}>
-              <PatientDetail patient={selected} contacts={contacts} onUpdate={updatePatient} tasks={tasks} onResolveTask={resolveTask} />
+              <PatientDetail patient={selected} contacts={contacts} onUpdate={updatePatient} onUpdateContact={updateContact} tasks={tasks} onResolveTask={resolveTask} />
             </div>
             <div style={{ width: 140, flexShrink: 0 }}>
               <div style={{ background: "#fff", borderRadius: 12, padding: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.08)", position: "sticky", top: 80 }}>
