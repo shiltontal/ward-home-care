@@ -56,19 +56,15 @@ const NURSES = ["נתי", "שגיא", "דוראל", "אליסיה", "נדא", "�
 
 const INITIAL_PATIENTS = [
   { id: "p1", name: "ליאורי", shift: "רביעי", staff: { doctor: "לבי", psychologist: "רוית", ot: "מירנדה", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "נתי", counselor: "ירדן" }},
-  { id: "p2", name: "אייל", shift: "רביעי", staff: { doctor: "טל", psychologist: "רוית", ot: "חוני", slp: "", behaviorist: "ויקי", dietitian: "בתיה", art_therapist: "שגיא", nurse: "ליאת", counselor: "גל" }},
   { id: "p3", name: "מיכאל", shift: "רביעי", staff: { doctor: "חגל", psychologist: "דנה", ot: "חוני", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "נתי", counselor: "טל" }},
   { id: "p4", name: "אריאל", shift: "רביעי", staff: { doctor: "רחל", psychologist: "עומר", ot: "הדסי", slp: "", behaviorist: "", dietitian: "", art_therapist: "ליאת", nurse: "דוראל", counselor: "עדי" }},
   { id: "p5", name: "נהוראי", shift: "שלישי", staff: { doctor: "ליין", psychologist: "שיר גבאי", ot: "הדסי", slp: "ענת", behaviorist: "ויקי", dietitian: "", art_therapist: "ליאת", nurse: "אליסיה", counselor: "הילה" }},
   { id: "p6", name: "שיר הלל", shift: "רביעי", staff: { doctor: "טל", psychologist: "עומר", ot: "מירנדה", slp: "", behaviorist: "", dietitian: "בתיה", art_therapist: "ליאת", nurse: "שגיא", counselor: "תומר" }},
   { id: "p7", name: "יובל", shift: "שלישי", staff: { doctor: "חגל", psychologist: "שיר בן פורת", ot: "הדסי", slp: "", behaviorist: "", dietitian: "בתיה", art_therapist: "ליאת", nurse: "נדא", counselor: "מאי" }},
   { id: "p8", name: "עילאי", shift: "רביעי", staff: { doctor: "חגל", psychologist: "עומר", ot: "חוני", slp: "ענת", behaviorist: "", dietitian: "", art_therapist: "", nurse: "עוביידא", counselor: "רועי" }},
-  { id: "p9", name: "ליבי", shift: "שלישי", staff: { doctor: "ליין", psychologist: "שיר בן פורת", ot: "חוני", slp: "", behaviorist: "", dietitian: "", art_therapist: "ליאת", nurse: "אטי", counselor: "רן" }},
   { id: "p10", name: "מאיה", shift: "רביעי", staff: { doctor: "ליבי", psychologist: "שיר בן פורת", ot: "מירנדה", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "מאיה", counselor: "עפרי" }},
   { id: "p11", name: "אלקנה", shift: "רביעי", staff: { doctor: "ליין", psychologist: "רוית", ot: "חוני", slp: "", behaviorist: "", dietitian: "", art_therapist: "", nurse: "אנה", counselor: "סול" }},
   { id: "p12", name: "יהונתן", shift: "שלישי", staff: { doctor: "טל", psychologist: "שיר גבאי", ot: "הדסי", slp: "", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "דוראל", counselor: "אוראל" }},
-  { id: "p13", name: "ליהי", shift: "רביעי", staff: { doctor: "מריאלה", psychologist: "מיכל", ot: "מירנדה", slp: "", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "אליסיה", counselor: "" }},
-  { id: "p14", name: "שילי", shift: "שלישי", staff: { doctor: "נתן", psychologist: "שיר גבאי", ot: "חוני", slp: "", behaviorist: "", dietitian: "", art_therapist: "", nurse: "", counselor: "שיראל" }},
   { id: "p15", name: "ירדן", shift: "שלישי", staff: { doctor: "מריאלה", psychologist: "עמרי", ot: "הדסי", slp: "ענת", behaviorist: "", dietitian: "בתיה", art_therapist: "", nurse: "נתי", counselor: "" }},
 ].map(p => ({
   ...p, age: "", notes: "",
@@ -1343,13 +1339,30 @@ export default function App() {
     setIsAuthenticated(false);
   };
 
+  // Patients to remove (one-time migration)
+  const REMOVED_PATIENTS = ["אייל", "ליהי", "שילי", "ליבי"];
+
   useEffect(() => {
     (async () => {
       const [p, c, s, u, t] = await Promise.all([
         load(SK.patients, INITIAL_PATIENTS), load(SK.contacts, []), load(SK.staffList, []),
         load(SK.staffUpdates, []), load(SK.tasks, []),
       ]);
-      setPatients(p); setContacts(c); setStaffList(s); setStaffUpdates(u); setTasks(t); setLoading(false);
+      // Filter out removed patients and their related data
+      const filteredPatients = p.filter(patient => !REMOVED_PATIENTS.includes(patient.name));
+      const removedIds = p.filter(patient => REMOVED_PATIENTS.includes(patient.name)).map(patient => patient.id);
+      const filteredContacts = c.filter(contact => !removedIds.includes(contact.childId));
+      const filteredTasks = t.filter(task => !removedIds.includes(task.childId));
+
+      // Save cleaned data back to storage if any patients were removed
+      if (filteredPatients.length !== p.length) {
+        await Promise.all([
+          sav(SK.patients, filteredPatients),
+          sav(SK.contacts, filteredContacts),
+          sav(SK.tasks, filteredTasks),
+        ]);
+      }
+      setPatients(filteredPatients); setContacts(filteredContacts); setStaffList(s); setStaffUpdates(u); setTasks(filteredTasks); setLoading(false);
       // Real-time sync: listen for changes from other team members
       if (isFirebaseReady) {
         dbListen(SK.patients, d => setPatients(d));
